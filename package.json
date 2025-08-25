@@ -1,0 +1,56 @@
+{
+  "name": "toonamf.js",
+  "description": "AMF (Action Message Format) library for Node.js based on https://github.com/Pyrodash/libamf.",
+  "version": "1.0.0",
+  "scripts": {
+    "list": "pnpm -r ls --depth -1",
+    "test": "pnpm -r test"
+  },
+  "bugs": {
+    "url": "https://github.com/OpenToonix/toonamf.js/issues"
+  },
+  "homepage": "https://github.com/OpenToonix/toonamf.js",
+  "keywords": [
+    "toonamf",
+    "amf",
+    "amf0",
+    "amf3",
+    "action message format",
+    "action",
+    "message",
+    "format",
+    "client",
+    "server",
+    "flash",
+    "nodejs",
+    "javascript",
+    "typescript",
+    "parser"
+  ],
+  "author": {
+    "name": "Juansecu",
+    "url": "https://github.com/Juansecu"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.18.0",
+    "pnpm": ">=10.15.0"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@eslint/json": "^0.13.1",
+    "@types/node": "^22.17.2",
+    "@types/validate-npm-package-name": "^4.0.2",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.3.0",
+    "jiti": "^2.5.1",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.40.0",
+    "validate-npm-package-name": "^6.0.2"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "name": "@toonamfjs/server",
+  "description": "AMF (Action Message Format) server-side library for Node.js based on https://github.com/Pyrodash/libamf.",
+  "version": "1.0.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "scripts": {
+    "build": "pnpm run build:cjs && pnpm run build:esm",
+    "build:cjs": "../node_modules/.bin/tsc --project server/tsconfig.cjs.json",
+    "build:esm": "../node_modules/.bin/tsc --project server/tsconfig.esm.json",
+    "lint": "../node_modules/.bin/eslint --ext .ts client/src server/src tests",
+    "test": "node --require ts-node/esm --test tests/*test.ts"
+  },
+  "bugs": {
+    "url": "https://github.com/OpenToonix/toonamf.js/issues"
+  },
+  "homepage": "https://github.com/OpenToonix/toonamf.js",
+  "keywords": [
+    "toonamf",
+    "amf",
+    "amf0",
+    "amf3",
+    "action message format",
+    "action",
+    "message",
+    "format",
+    "server",
+    "flash",
+    "nodejs",
+    "javascript",
+    "typescript",
+    "parser"
+  ],
+  "author": {
+    "name": "Juansecu",
+    "url": "https://github.com/Juansecu"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.18.0",
+    "pnpm": ">=10.15.0"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "dependencies": {
+    "bytearray-node": "^3.3.5"
+  },
+  "peerDependencies": {
+    "express": "^5.1.0"
+  },
+  "peerDependenciesMeta": {
+    "express": {
+      "optional": false
+    }
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/esm/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ]
+}
