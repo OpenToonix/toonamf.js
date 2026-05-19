@@ -1,6 +1,9 @@
+allowBuilds:
+  lzma-native: false
 autoInstallPeers: true
 engineStrict: true
 minimumReleaseAge: 10080 # 7 days
 packages:
+  - 'bytearray-node'
   - 'client'
   - 'server'
