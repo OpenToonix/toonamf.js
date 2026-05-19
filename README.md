@@ -4,11 +4,11 @@ AMF (Action Message Format) library for Node.js based on https://github.com/Pyro
 
 ## Requirements
 
-- **[Node.js](https://nodejs.org/) -** version 22.18 or higher
+- **[Node.js](https://nodejs.org/) -** version 24.11.1 or higher
 
 ### For Development
 
-- **[PNPM](https://pnpm.io/) -** Version 10.15.0 or higher
+- **[PNPM](https://pnpm.io/) -** Version 11.1.3 or higher
 
 ## Installing
 
