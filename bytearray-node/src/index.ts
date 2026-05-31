@@ -1,47 +1,30 @@
-'use strict';
-
-/**
- * Our utility dependencies
- * @constant
- */
-const {
-    deflateSync,
+import {
     deflateRawSync,
-    inflateSync,
-    inflateRawSync
-} = require('zlib');
-const { encodingExists, decode, encode } = require('iconv-lite');
+    deflateSync,
+    inflateRawSync,
+    inflateSync
+} from 'node:zlib';
 
-/**
- * @exports
- * @class
- */
-class ByteArray {
+import * as iconvModule from 'iconv-lite';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const iconv = (iconvModule as any).default || iconvModule;
+const { encodingExists, decode, encode } = iconv;
+
+export default class ByteArray {
+    public buffer!: Buffer;
+    public position!: number;
+    public endian!: boolean;
+
     /**
      * @constructor
-     * @param {Buffer|Array} buffer
+     * @param buffer Optional buffer or byte array to initialize with
      */
-    constructor(buffer) {
-        /**
-         * Holds the data
-         * @type {Buffer}
-         */
-        this.buffer = null;
-        /**
-         * The current position
-         * @type {Number}
-         */
-        this.position = null;
-        /**
-         * The byte order
-         * @type {Boolean}
-         */
-        this.endian = null;
-
+    public constructor(buffer?: Buffer | number[]) {
         this.reset(buffer);
     }
 
-    reset(buffer) {
+    public reset(buffer?: Buffer | number[]): void {
         this.buffer = Buffer.isBuffer(buffer)
             ? buffer
             : Array.isArray(buffer)
@@ -53,30 +36,27 @@ class ByteArray {
 
     /**
      * Returns the length of the buffer
-     * @returns {Number}
      */
-    get length() {
+    public get length(): number {
         return this.buffer.length;
     }
 
     /**
      * Returns the endianness as a string
-     * @returns {String}
      */
-    get endianStr() {
+    public get endianStr(): 'BE' | 'LE' {
         return this.endian ? 'BE' : 'LE';
     }
 
     /**
      * Sets the length of the buffer
-     * @param {Number} value
      */
-    set length(value) {
+    public set length(value: number) {
         if (value === 0) {
             this.clear();
         } else if (value !== this.length) {
             if (value < this.length) {
-                this.buffer = this.buffer.slice(0, value);
+                this.buffer = this.buffer.subarray(0, value);
                 this.position = this.length;
             } else {
                 this.expand(value);
@@ -86,39 +66,51 @@ class ByteArray {
 
     /**
      * Returns the amount of bytes available
-     * @returns {Number}
      */
-    get bytesAvailable() {
+    public get bytesAvailable(): number {
         return this.length - this.position;
     }
 
     /**
      * Reads a buffer function
-     * @param {String} func
-     * @returns {Number}
      */
-    readBufferFunc(func, pos) {
-        const value = this.buffer[func + this.endianStr](this.position);
-        this.position += pos;
-        return value;
+    public readBufferFunc(func: string, pos: number): number {
+        const methodName = (func + this.endianStr) as keyof Buffer;
+        const method = this.buffer[methodName];
+
+        if (typeof method === 'function') {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+            const value = (method as Function).call(this.buffer, this.position);
+            this.position += pos;
+            return value;
+        }
+        throw new Error(`Method ${String(methodName)} not found on Buffer`);
     }
 
     /**
      * Writes a buffer function
-     * @param {Number} value
-     * @param {String} func
      */
-    writeBufferFunc(value, func, pos) {
+    public writeBufferFunc(value: number, func: string, pos: number): void {
         this.expand(pos);
-        this.buffer[func + this.endianStr](value, this.position);
-        this.position += pos;
+
+        const methodName = (func + this.endianStr) as keyof Buffer;
+        const method = this.buffer[methodName];
+
+        if (typeof method === 'function') {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+            (method as Function).call(this.buffer, value, this.position);
+            this.position += pos;
+        } else {
+            throw new TypeError(
+                `Method ${String(methodName)} not found on Buffer`
+            );
+        }
     }
 
     /**
      * Expands the buffer when needed
-     * @param {Number} value
      */
-    expand(value) {
+    public expand(value: number): void {
         if (this.bytesAvailable < value) {
             const toExpandWith = value - this.bytesAvailable;
 
@@ -132,52 +124,49 @@ class ByteArray {
     /**
      * Clears the buffer and sets the position to 0
      */
-    clear() {
+    public clear(): void {
         this.buffer = Buffer.alloc(0);
         this.position = 0;
     }
 
     /**
      * Compresses the buffer
-     * @param {String} algorithm
      */
-    compress(algorithm) {
+    public compress(algorithm: string): void {
         algorithm = algorithm.toLowerCase();
 
-        if (algorithm === 'zlib') {
+        if (algorithm === 'zlib')
             this.buffer = deflateSync(this.buffer, { level: 9 });
-        } else if (algorithm === 'deflate') {
+        else if (algorithm === 'deflate') {
             this.buffer = deflateRawSync(this.buffer);
-        } else {
+        } else
             throw new Error(`Invalid compression algorithm: '${algorithm}'.`);
-        }
 
         this.position = this.length;
     }
 
     /**
      * Reads a boolean
-     * @returns {Boolean}
      */
-    readBoolean() {
+    public readBoolean(): boolean {
         return this.readByte() !== 0;
     }
 
     /**
      * Reads a signed byte
-     * @returns {Number}
      */
-    readByte() {
+    public readByte(): number {
         return this.buffer.readInt8(this.position++);
     }
 
     /**
      * Reads multiple signed bytes from a ByteArray
-     * @param {ByteArray} bytes
-     * @param {Number} offset
-     * @param {Number} length
      */
-    readBytes(bytes, offset = 0, length = 0) {
+    public readBytes(
+        bytes: ByteArray,
+        offset: number = 0,
+        length: number = 0
+    ): void {
         if (length === 0) {
             length = this.bytesAvailable;
         }
@@ -191,7 +180,7 @@ class ByteArray {
         }
 
         for (let i = 0; i < length; i++) {
-            bytes.buffer[i + offset] = this.buffer[i + this.position];
+            bytes.buffer[i + offset] = this.buffer[i + this.position]!;
         }
 
         this.position += length;
@@ -199,40 +188,37 @@ class ByteArray {
 
     /**
      * Reads a double
-     * @returns {Number}
      */
-    readDouble() {
+    public readDouble(): number {
         return this.readBufferFunc('readDouble', 8);
     }
 
     /**
      * Reads a float
-     * @returns {Number}
      */
-    readFloat() {
+    public readFloat(): number {
         return this.readBufferFunc('readFloat', 4);
     }
 
     /**
      * Reads a signed int
-     * @returns {Number}
      */
-    readInt() {
+    public readInt(): number {
         return this.readBufferFunc('readInt32', 4);
     }
 
     /**
      * Reads a multibyte string
-     * @param {Number} length
-     * @param {String} charset
-     * @returns {String}
      */
-    readMultiByte(length, charset = 'utf8') {
+    public readMultiByte(length: number, charset: string = 'utf8'): string {
         const position = this.position;
         this.position += length;
 
         if (encodingExists(charset)) {
-            return decode(this.buffer.slice(position, this.position), charset);
+            return decode(
+                this.buffer.subarray(position, this.position),
+                charset
+            );
         } else {
             throw new Error(`Invalid character set: '${charset}'.`);
         }
@@ -240,74 +226,64 @@ class ByteArray {
 
     /**
      * Reads a signed short
-     * @returns {Number}
      */
-    readShort() {
+    public readShort(): number {
         return this.readBufferFunc('readInt16', 2);
     }
 
     /**
      * Reads an unsigned byte
-     * @returns {Number}
      */
-    readUnsignedByte() {
+    public readUnsignedByte(): number {
         return this.buffer.readUInt8(this.position++);
     }
 
     /**
      * Reads an unsigned int
-     * @returns {Number}
      */
-    readUnsignedInt() {
+    public readUnsignedInt(): number {
         return this.readBufferFunc('readUInt32', 4);
     }
 
     /**
      * Reads an unsigned short
-     * @returns {Number}
      */
-    readUnsignedShort() {
+    public readUnsignedShort(): number {
         return this.readBufferFunc('readUInt16', 2);
     }
 
     /**
      * Reads a UTF-8 string
-     * @returns {String}
      */
-    readUTF() {
+    public readUTF(): string {
         return this.readMultiByte(this.readUnsignedShort());
     }
 
     /**
      * Reads UTF-8 bytes
-     * @param {Number} length
-     * @returns {String}
      */
-    readUTFBytes(length) {
+    public readUTFBytes(length: number): string {
         return this.readMultiByte(length);
     }
 
     /**
      * Converts the buffer to JSON
-     * @returns {Object}
      */
-    toJSON() {
+    public toJSON(): { type: 'Buffer'; data: number[] } {
         return this.buffer.toJSON();
     }
 
     /**
      * Converts the buffer to a string
-     * @returns {String}
      */
-    toString() {
+    public toString(): string {
         return this.buffer.toString('utf8');
     }
 
     /**
      * Decompresses the buffer
-     * @param {String} algorithm
      */
-    uncompress(algorithm) {
+    public uncompress(algorithm: string): void {
         algorithm = algorithm.toLowerCase();
 
         if (algorithm === 'zlib') {
@@ -323,28 +299,27 @@ class ByteArray {
 
     /**
      * Writes a boolean
-     * @param {Boolean} value
      */
-    writeBoolean(value) {
+    public writeBoolean(value: boolean): void {
         this.writeByte(value ? 1 : 0);
     }
 
     /**
      * Writes a signed byte
-     * @param {Number} value
      */
-    writeByte(value) {
+    public writeByte(value: number): void {
         this.expand(1);
         this.buffer.writeInt8(value, this.position++);
     }
 
     /**
      * Writes multiple signed bytes to a ByteArray
-     * @param {ByteArray} bytes
-     * @param {Number} offset
-     * @param {Number} length
      */
-    writeBytes(bytes, offset = 0, length = 0) {
+    public writeBytes(
+        bytes: ByteArray,
+        offset: number = 0,
+        length: number = 0
+    ): void {
         if (length === 0) {
             length = bytes.length - offset;
         }
@@ -352,7 +327,7 @@ class ByteArray {
         this.expand(length);
 
         for (let i = 0; i < length; i++) {
-            this.buffer[i + this.position] = bytes.buffer[i + offset];
+            this.buffer[i + this.position] = bytes.buffer[i + offset]!;
         }
 
         this.position += length;
@@ -360,92 +335,77 @@ class ByteArray {
 
     /**
      * Writes a double
-     * @param {Number} value
      */
-    writeDouble(value) {
+    public writeDouble(value: number): void {
         this.writeBufferFunc(value, 'writeDouble', 8);
     }
 
     /**
      * Writes a float
-     * @param {Number} value
      */
-    writeFloat(value) {
+    public writeFloat(value: number): void {
         this.writeBufferFunc(value, 'writeFloat', 4);
     }
 
     /**
      * Writes a signed int
-     * @param {Number} value
      */
-    writeInt(value) {
+    public writeInt(value: number): void {
         this.writeBufferFunc(value, 'writeInt32', 4);
     }
 
     /**
      * Writes a multibyte string
-     * @param {String} value
-     * @param {String} charset
      */
-    writeMultiByte(value, charset = 'utf8') {
+    public writeMultiByte(value: string, charset = 'utf8'): void {
         this.position += Buffer.byteLength(value);
 
-        if (encodingExists(charset)) {
+        if (encodingExists(charset))
             this.buffer = Buffer.concat([this.buffer, encode(value, charset)]);
-        } else {
-            throw new Error(`Invalid character set: '${charset}'.`);
-        }
+        else throw new Error(`Invalid character set: '${charset}'.`);
     }
 
     /**
      * Writes a signed short
-     * @param {Number} value
      */
-    writeShort(value) {
+    public writeShort(value: number): void {
         this.writeBufferFunc(value, 'writeInt16', 2);
     }
 
     /**
      * Writes an unsigned byte
-     * @param {Number} value
      */
-    writeUnsignedByte(value) {
+    public writeUnsignedByte(value: number): void {
         this.expand(1);
         this.buffer.writeUInt8(value, this.position++);
     }
 
     /**
      * Writes an unsigned int
-     * @param {Number} value
      */
-    writeUnsignedInt(value) {
+    public writeUnsignedInt(value: number): void {
         this.writeBufferFunc(value, 'writeUInt32', 4);
     }
 
     /**
      * Writes an unsigned short
-     * @param {Number} value
      */
-    writeUnsignedShort(value) {
+    public writeUnsignedShort(value: number): void {
         this.writeBufferFunc(value, 'writeUInt16', 2);
     }
 
     /**
      * Writes a UTF-8 string
-     * @param {String} value
      */
-    writeUTF(value) {
+    public writeUTF(value: string): void {
         this.writeUnsignedShort(Buffer.byteLength(value));
         this.writeMultiByte(value);
     }
 
     /**
      * Writes UTF-8 bytes
-     * @param {String} value
      */
-    writeUTFBytes(value) {
+    public writeUTFBytes(value: string): void {
         this.writeMultiByte(value);
     }
 }
-
-module.exports = ByteArray;

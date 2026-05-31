@@ -2,14 +2,34 @@
   "name": "@toonamfjs/bytearray-node",
   "version": "1.0.0",
   "description": "A Node.js implementation of the Actionscript 3 ByteArray, based on bytearray-node by Zaseth.",
-  "main": "src/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "homepage": "https://github.com/OpenToonix/toonamf.js-bytearray-node",
   "directories": {
-    "test": "test"
+    "test": "tests"
   },
   "scripts": {
-    "test": "node test/index"
+    "build": "pnpm run build:cjs && pnpm run build:esm && pnpm run postbuild",
+    "build:cjs": "tsc --project tsconfig.cjs.json && pnpm run rename:cjs",
+    "build:esm": "tsc --project tsconfig.esm.json && pnpm run rename:esm",
+    "lint": "../node_modules/.bin/eslint --ext .ts src tests",
+    "postbuild": "node scripts/postbuild.js",
+    "rename:cjs": "node scripts/rename-cjs.js",
+    "rename:esm": "node scripts/rename-esm.js",
+    "test": "pnpm run build && cross-env TS_NODE_PROJECT=../tsconfig.tests.json node --require ts-node/esm --test tests/*.test.ts"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/esm/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/OpenToonix/toonamf.js-bytearray-node"
@@ -37,6 +57,6 @@
     "iconv-lite": "^0.5.0"
   },
   "devDependencies": {
-    "tape": "^4.11.0"
+    "cross-env": "^10.1.0"
   }
 }

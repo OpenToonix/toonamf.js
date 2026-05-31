@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "list": "pnpm -r ls --depth -1",
+    "lint": "pnpm -r lint",
     "test": "pnpm -r test"
   },
   "bugs": {
