@@ -7,9 +7,9 @@
   "types": "dist/esm/index.d.ts",
   "scripts": {
     "build": "pnpm run build:cjs && pnpm run build:esm",
-    "build:cjs": "../node_modules/.bin/tsc --project server/tsconfig.cjs.json",
-    "build:esm": "../node_modules/.bin/tsc --project server/tsconfig.esm.json",
-    "lint": "../node_modules/.bin/eslint --ext .ts client/src server/src tests",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "lint": "eslint --ext .ts tests",
     "test": "node --require ts-node/esm --test tests/*test.ts"
   },
   "bugs": {

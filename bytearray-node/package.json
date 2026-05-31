@@ -13,7 +13,7 @@
     "build": "pnpm run build:cjs && pnpm run build:esm && pnpm run postbuild",
     "build:cjs": "tsc --project tsconfig.cjs.json && pnpm run rename:cjs",
     "build:esm": "tsc --project tsconfig.esm.json && pnpm run rename:esm",
-    "lint": "../node_modules/.bin/eslint --ext .ts src tests",
+    "lint": "eslint --ext .ts src tests",
     "postbuild": "node scripts/postbuild.js",
     "rename:cjs": "node scripts/rename-cjs.js",
     "rename:esm": "node scripts/rename-esm.js",
