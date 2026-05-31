@@ -5,7 +5,7 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "homepage": "https://github.com/OpenToonix/toonamf.js-bytearray-node",
+  "homepage": "https://github.com/OpenToonix/toonamf.js/tree/main/bytearray-node",
   "directories": {
     "test": "tests"
   },
@@ -21,9 +21,9 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/esm/index.d.ts"
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/cjs/index.cjs",
+      "types": "./dist/esm/index.d.mts"
     },
     "./package.json": "./package.json"
   },
@@ -32,10 +32,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenToonix/toonamf.js-bytearray-node"
+    "url": "https://github.com/OpenToonix/toonamf.js"
   },
   "bugs": {
-    "url": "https://github.com/OpenToonix/toonamf.js-bytearray-node/issues"
+    "url": "https://github.com/OpenToonix/toonamf.js/issues?q=is%3Aissue%20state%3Aopen%20bytearray-node"
   },
   "keywords": [
     "bytearray",
