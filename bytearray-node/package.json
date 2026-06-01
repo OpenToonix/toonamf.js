@@ -53,8 +53,13 @@
     "pnpm": ">=11.1.3"
   },
   "packageManager": "pnpm@11.1.3",
-  "dependencies": {
+  "peerDependencies": {
     "iconv-lite": "^0.5.0"
+  },
+  "peerDependenciesMeta": {
+    "iconv-lite": {
+      "optional": false
+    }
   },
   "devDependencies": {
     "cross-env": "^10.1.0"
