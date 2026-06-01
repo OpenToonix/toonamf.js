@@ -1,0 +1,41 @@
+name: Check Issues
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - edited
+      - opened
+      - reopened
+      - synchronize
+  push:
+    branches:
+      - main
+    tags:
+      - 'bytearray-node/v*.*.*'
+      - 'client/v*.*.*'
+      - 'server/v*.*.*'
+
+jobs:
+  check-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: '11.1.3'
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: 'pnpm'
+          node-version: '24.11.1'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check linter errors
+        run: pnpm run lint
+      - name: Test packages
+        run: pnpm run test
+      - name: Build packages
+        run: pnpm run build

@@ -1,0 +1,36 @@
+name: Publish bytearray-node
+
+on:
+  workflow_run:
+    workflows:
+      - 'Check Issues'
+    types:
+      - completed
+
+jobs:
+  publish-bytearray-node:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      startsWith(github.event.workflow_run.head_branch, 'bytearray-node/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: '11.1.3'
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: 'pnpm'
+          node-version: '24.11.1'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build package
+        run: pnpm run --filter=bytearray-node build
+      - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --filter=bytearray-node --provenance --access public
