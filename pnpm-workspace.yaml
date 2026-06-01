@@ -4,7 +4,7 @@ autoInstallPeers: true
 engineStrict: true
 minimumReleaseAge: 10080 # 7 days
 minimumReleaseAgeExclude:
-  - '@toonamfjs/bytearray-node@1.0.1'
+  - '@toonamfjs/bytearray-node@1.0.2'
 packages:
   - 'bytearray-node'
   - 'client'

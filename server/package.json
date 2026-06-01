@@ -47,7 +47,7 @@
   },
   "packageManager": "pnpm@11.1.3",
   "dependencies": {
-    "@toonamfjs/bytearray-node": "^1.0.1",
+    "@toonamfjs/bytearray-node": "^1.0.2",
     "iconv-lite": "~0.5.2"
   },
   "peerDependencies": {
