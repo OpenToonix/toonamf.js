@@ -34,6 +34,7 @@ jobs:
       - name: Build package
         run: pnpm run --filter=bytearray-node build
       - name: Publish package
+        working-directory: bytearray-node
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish --filter=bytearray-node --provenance --access public
+        run: npm publish --provenance --access public
