@@ -12,6 +12,10 @@
     "lint": "eslint --ext .ts tests",
     "test": "node --require ts-node/esm --test tests/*test.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OpenToonix/toonamf.js.git"
+  },
   "bugs": {
     "url": "https://github.com/OpenToonix/toonamf.js/issues"
   },

@@ -8,6 +8,10 @@
     "list": "pnpm -r ls --depth -1",
     "test": "pnpm -r test"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OpenToonix/toonamf.js.git"
+  },
   "bugs": {
     "url": "https://github.com/OpenToonix/toonamf.js/issues"
   },

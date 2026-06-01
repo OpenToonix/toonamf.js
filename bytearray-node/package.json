@@ -32,7 +32,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenToonix/toonamf.js"
+    "url": "git+https://github.com/OpenToonix/toonamf.js.git"
   },
   "bugs": {
     "url": "https://github.com/OpenToonix/toonamf.js/issues?q=is%3Aissue%20state%3Aopen%20bytearray-node"
