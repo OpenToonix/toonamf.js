@@ -33,7 +33,7 @@ This project is also a forked version from [`bytearray-node`](https://github.com
 ## Installation
 
 ```bash
-$ npm install @toonamfjs/bytearray-node`
+$ npm install @toonamfjs/bytearray-node iconv-lite
 ```
 
 ## Usage
