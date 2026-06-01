@@ -1,6 +1,6 @@
 {
   "name": "@toonamfjs/bytearray-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Node.js implementation of the Actionscript 3 ByteArray, based on bytearray-node by Zaseth.",
   "main": "dist/cjs/index.cjs",
   "module": "dist/esm/index.mjs",
