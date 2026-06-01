@@ -134,4 +134,6 @@ MIT License © 2025 Juansecu
 > this package does not provide AMF0/AMF3
 > serialization/deserialization out of the box.
 >
-> For AMF0/AMF3 serialization/deserialization, consider using `@toonamfjs/client` for client-side and `@toonamfjs/server` for server-side.
+> For AMF0/AMF3 serialization/deserialization,
+> consider using `@toonamfjs/client` for client-side,
+> and `@toonamfjs/server` for server-side.
