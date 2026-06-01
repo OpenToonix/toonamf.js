@@ -3,8 +3,9 @@
   "description": "AMF (Action Message Format) library for Node.js based on https://github.com/Pyrodash/libamf.",
   "version": "1.0.0",
   "scripts": {
-    "list": "pnpm -r ls --depth -1",
+    "build": "pnpm -r build",
     "lint": "pnpm -r lint",
+    "list": "pnpm -r ls --depth -1",
     "test": "pnpm -r test"
   },
   "bugs": {
