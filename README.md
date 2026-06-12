@@ -16,6 +16,16 @@ that we're looking to address by creating this library. Some of them are:
   so users of `toonamf.js` can install only what they need,
   instead of just installing all parts of the library, including the ones
   they don't really need.
+- **Type safety:** You may have developed applications using type-flexible
+  languages like JavaScript or Python. We have too! Because of this,
+  we know it can be very easy to develop applications using type-flexible
+  languages, but they come with a cost: If you don't handle types correctly,
+  you surely will find many issues when running your applications
+  in production environments.
+
+  To avoid this, we decided to rewrite `libamf` using **TypeScript**,
+  so it becomes harder to introduce type-flexible related issues
+  in production environments.
 
 ## Requirements
 
